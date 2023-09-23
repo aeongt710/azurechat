@@ -3,10 +3,10 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - asd
+      - main
   pull_request:
     branches:
-      - asd
+      - main
 
 jobs:
   build:
