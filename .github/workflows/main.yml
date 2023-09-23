@@ -1,0 +1,57 @@
+name: Custom
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🌱 Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: 🍏 Set up Node.js version
+        uses: actions/setup-node@v1
+        with:
+          node-version: "18.x"
+
+      - name: ⚙️ npm install and build
+        run: |
+          cd ./src
+          npm install
+          npm run build --if-present
+          cd ..
+
+      - name: 📦 Package Next application
+        run: |
+          cd ./src
+          zip Nextjs-site.zip ./* .next -qr
+
+      - name: ⬆️ Publish Next Application artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Nextjs-site
+          path: ./src/Nextjs-site.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: "Production"
+
+    steps:
+      - name: ⬇️ Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: Nextjs-site
+
+      - name: 🚀 Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'YourAzureAppName'  # Replace with your Azure App Service name
+          slot-name: 'production'  # Optional, if you have deployment slots
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C034B2EFC97E427EAC107FB53D3AB720 }}  # Replace with your GitHub secret name for the publish profile
+          package: ./Nextjs-site.zip
