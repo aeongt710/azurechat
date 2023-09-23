@@ -51,7 +51,7 @@ jobs:
       - name: 🚀 Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'YourAzureAppName'  # Replace with your Azure App Service name
+          app-name: 'azurechat-csx'  # Replace with your Azure App Service name
           slot-name: 'production'  # Optional, if you have deployment slots
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C034B2EFC97E427EAC107FB53D3AB720 }}  # Replace with your GitHub secret name for the publish profile
           package: ./Nextjs-site.zip
